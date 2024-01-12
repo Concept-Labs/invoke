@@ -3,7 +3,6 @@
     "description": "(C)oncept-Labs Invoker",
     "keywords": ["php","invoke"],
     "license": "MIT",
-    "version": "1.0.0",
     "authors": [
         {
             "name": "Victor Galitsky",
