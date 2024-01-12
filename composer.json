@@ -1,0 +1,31 @@
+{
+    "name": "concept-labs/invoke",
+    "description": "(C)oncept-Labs Invoker",
+    "keywords": ["php","invoke"],
+    "license": "MIT",
+    "version": "1.0.0",
+    "authors": [
+        {
+            "name": "Victor Galitsky",
+            "email": "concept.galitsky@gmail.com"
+        }
+    ],
+    "require": {
+        "php": "^8.0",
+    },
+    "autoload": {
+        "psr-4": {
+            "Cl\\Invoke\\": "src/"
+        }
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^10.0",
+        "squizlabs/php_codesniffer": "^3.0.0",
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Cl\\Invoke\\Test\\": "test/"
+        }
+    }
+
+}
