@@ -4,7 +4,7 @@ namespace Cl\Invoke\Exception;
 
 use RuntimeException;
 
-class TimeoutException extends RuntimeException
+class TimedInvokePcntlNotLoadedException extends RuntimeException
 {
 
 }

@@ -1,15 +1,16 @@
 <?php
 
+namespace Cl\Invoke\Test;
+
 use PHPUnit\Framework\TestCase;
 
-use Cl\Invoke\TimedInvoke;
-use Cl\Invoke\Exception\CallException;
+use Cl\Invoke\Timeout\Pcntl\Invoker;
 use Cl\Invoke\Exception\TimeoutException;
 
 /**
- * @covers Cl\Invoke\TimedInvoke
+ * @covers Cl\Invoke\Timeout\Pcntl\Invoker
  */
-class TimedInvokeTest extends TestCase
+class TimedPcntlInvokeTest extends TestCase
 {
     public function testInvokeCallableSuccessfully()
     {
@@ -20,7 +21,7 @@ class TimedInvokeTest extends TestCase
         $arguments = [3, 4];
         $timeout = 1;
 
-        $result = TimedInvoke::invoke($callable, $arguments, $timeout);
+        $result = Invoker::invoke($callable, $arguments, $timeout);
 
         $this->assertEquals(7, $result);
     }
@@ -36,7 +37,7 @@ class TimedInvokeTest extends TestCase
         $arguments = [];
         $timeout = 1;
 
-        TimedInvoke::invoke($callable, $arguments, $timeout);
+        Invoker::invoke($callable, $arguments, $timeout);
     }
 
     public function testInvokeCallableWithDefaultTimeout()
@@ -47,7 +48,7 @@ class TimedInvokeTest extends TestCase
 
         $arguments = [3, 4];
 
-        $result = TimedInvoke::invoke($callable, $arguments);
+        $result = Invoker::invoke($callable, $arguments);
 
         $this->assertEquals(7, $result);
     }
@@ -62,8 +63,9 @@ class TimedInvokeTest extends TestCase
 
         $arguments = [];
 
-        TimedInvoke::invoke($callable, $arguments);
+        Invoker::invoke($callable, $arguments);
     }
+
 
     public function testInvokeMagicMethodSuccessfully()
     {
@@ -74,7 +76,7 @@ class TimedInvokeTest extends TestCase
         $arguments = [3, 4];
         $timeout = 1;
 
-        $timedInvoke = new TimedInvoke();
+        $timedInvoke = new Invoker();
         $result = $timedInvoke($callable, $arguments, $timeout);
 
         $this->assertEquals(12, $result);

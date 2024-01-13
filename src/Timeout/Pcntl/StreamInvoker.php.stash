@@ -1,0 +1,60 @@
+<?php
+declare(strict_types=1);
+namespace Cl\Invoke\Timeout\Pcntl;
+
+use Cl\Able\Assertable\AssertableStaticInterface;
+use Cl\Able\Invokeable\InvokeableInterface;
+use Cl\Invoke\InvokerStaticInterface;
+use Cl\Invoke\Timeout\InvokerTimeoutInterface;
+
+class StreamInvoker implements  InvokerStaticInterface,
+                                InvokeableInterface,
+                                AssertableStaticInterface,
+                                InvokerTimeoutInterface
+{
+    use AssertTrait;
+    use InvokeableTrait;
+
+    public static function invoke(callable $callable, array $arguments, ?int $timeout = static::DEFAULT_TIMEOUT)
+    {
+        $pipe = stream_socket_pair(STREAM_PF_UNIX, STREAM_SOCK_STREAM, STREAM_IPPROTO_IP);
+
+        $pid = pcntl_fork();
+        if ($pid == -1) {
+            
+        } elseif ($pid) {
+            // Батьківський процес
+            fclose($pipe[1]);
+
+            // Встановлюємо таймаут
+            stream_set_blocking($pipe[0], 0);
+            $read = [$pipe[0]];
+            $write = [];
+            $except = [];
+
+            if (stream_select($read, $write, $except, 0, $timeout)) {
+                // Зчитуємо дані з каналу
+                $result = stream_get_contents($pipe[0]);
+                echo "Callable result: $result\n";
+            } else {
+                // Переривання виклику через таймаут
+                echo "Timeout exceeded\n";
+                posix_kill($pid, SIGKILL); // Завершуємо дочірній процес
+            }
+
+            fclose($pipe[0]);
+        } else {
+            // Дочірній процес
+            fclose($pipe[0]);
+
+            // Викликаємо функцію або метод
+            $result = call_user_func_array($callable, $arguments);
+
+            // Передаємо результат в канал
+            fwrite($pipe[1], $result);
+            fclose($pipe[1]);
+
+            exit; // Завершуємо дочірній процес
+        }
+    }
+}
